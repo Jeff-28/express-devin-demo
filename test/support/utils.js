@@ -123,6 +123,10 @@ function rawRequest(app, method, rawPath, callback) {
 
     req.end();
   });
+
+  server.on('error', function (err) {
+    callback(err);
+  });
 }
 
 exports.rawRequest = rawRequest;
