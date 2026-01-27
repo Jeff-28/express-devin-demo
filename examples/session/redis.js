@@ -7,21 +7,29 @@
 var express = require('../..');
 var logger = require('morgan');
 var session = require('express-session');
-
-// pass the express to the connect redis module
-// allowing it to inherit from session.Store
-var RedisStore = require('connect-redis')(session);
+var { RedisStore } = require('connect-redis');
+var { createClient } = require('redis');
 
 var app = express();
 
 app.use(logger('dev'));
+
+// Initialize Redis client
+var redisClient = createClient();
+redisClient.connect().catch(console.error);
+
+// Initialize Redis store
+var redisStore = new RedisStore({
+  client: redisClient,
+  prefix: 'sess:'
+});
 
 // Populates req.session
 app.use(session({
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
   secret: 'keyboard cat',
-  store: new RedisStore
+  store: redisStore
 }));
 
 app.get('/', function(req, res){
