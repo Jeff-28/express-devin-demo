@@ -269,13 +269,9 @@ describe('express.static()', function () {
       })
 
       it('should fall-through when traversing past root', function (done) {
-        // Use rawRequest to send path without URL normalization (supertest 7.x normalizes URLs)
-        utils.rawRequest(this.app, 'GET', '/users/../../todo.txt', function (err, res) {
-          if (err) return done(err)
-          assert.strictEqual(res.statusCode, 404)
-          assert.strictEqual(res.body, 'Not Found')
-          done()
-        })
+        request(this.app)
+          .get('/users/../../todo.txt')
+          .expect(404, 'Not Found', done)
       })
 
       it('should fall-through when URL too long', function (done) {
@@ -348,13 +344,9 @@ describe('express.static()', function () {
       })
 
       it('should 403 when traversing past root', function (done) {
-        // Use rawRequest to send path without URL normalization (supertest 7.x normalizes URLs)
-        utils.rawRequest(this.app, 'GET', '/users/../../todo.txt', function (err, res) {
-          if (err) return done(err)
-          assert.strictEqual(res.statusCode, 403)
-          assert.ok(/ForbiddenError/.test(res.body))
-          done()
-        })
+        request(this.app)
+          .get('/users/../../todo.txt')
+          .expect(403, /ForbiddenError/, done)
       })
 
       it('should 404 when URL too long', function (done) {
@@ -586,21 +578,15 @@ describe('express.static()', function () {
     })
 
     it('should catch urlencoded ../', function (done) {
-      // Use rawRequest to send path without URL normalization (supertest 7.x normalizes URLs)
-      utils.rawRequest(this.app, 'GET', '/users/%2e%2e/%2e%2e/todo.txt', function (err, res) {
-        if (err) return done(err)
-        assert.strictEqual(res.statusCode, 403)
-        done()
-      })
+      request(this.app)
+        .get('/users/%2e%2e/%2e%2e/todo.txt')
+        .expect(403, done)
     })
 
     it('should not allow root path disclosure', function (done) {
-      // Use rawRequest to send path without URL normalization (supertest 7.x normalizes URLs)
-      utils.rawRequest(this.app, 'GET', '/users/../../fixtures/todo.txt', function (err, res) {
-        if (err) return done(err)
-        assert.strictEqual(res.statusCode, 403)
-        done()
-      })
+      request(this.app)
+        .get('/users/../../fixtures/todo.txt')
+        .expect(403, done)
     })
   })
 
