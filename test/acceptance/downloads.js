@@ -1,6 +1,8 @@
 
 var app = require('../../examples/downloads')
-  , request = require('supertest');
+  , request = require('supertest')
+  , utils = require('../support/utils')
+  , assert = require('node:assert');
 
 describe('downloads', function(){
   describe('GET /', function(){
@@ -39,9 +41,12 @@ describe('downloads', function(){
 
   describe('GET /files/../index.js', function () {
     it('should respond with 403', function (done) {
-      request(app)
-        .get('/files/../index.js')
-        .expect(403, done)
+      // Use rawRequest to send path without URL normalization (supertest 7.x normalizes URLs)
+      utils.rawRequest(app, 'GET', '/files/../index.js', function (err, res) {
+        if (err) return done(err)
+        assert.strictEqual(res.statusCode, 403)
+        done()
+      })
     })
   })
 })
