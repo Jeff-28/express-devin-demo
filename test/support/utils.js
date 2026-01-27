@@ -84,3 +84,46 @@ function shouldSkipQuery(versionString) {
   return Number(getMajorVersion(versionString)) < 22
 }
 
+/**
+ * Make a raw HTTP request without URL normalization.
+ * This is needed for testing path traversal scenarios where we need to send
+ * raw paths like '/users/../../file.txt' without the client normalizing them.
+ *
+ * @param {object} app - Express app instance
+ * @param {string} method - HTTP method (GET, POST, etc.)
+ * @param {string} rawPath - Raw path to send (will not be normalized)
+ * @param {function} callback - Callback with (err, res) where res has statusCode and body
+ */
+function rawRequest(app, method, rawPath, callback) {
+  var http = require('node:http');
+  var server = app.listen(0, function () {
+    var port = server.address().port;
+    var options = {
+      hostname: '127.0.0.1',
+      port: port,
+      path: rawPath,
+      method: method
+    };
+
+    var req = http.request(options, function (res) {
+      var body = '';
+      res.on('data', function (chunk) {
+        body += chunk;
+      });
+      res.on('end', function () {
+        server.close();
+        callback(null, { statusCode: res.statusCode, body: body, headers: res.headers });
+      });
+    });
+
+    req.on('error', function (err) {
+      server.close();
+      callback(err);
+    });
+
+    req.end();
+  });
+}
+
+exports.rawRequest = rawRequest;
+
