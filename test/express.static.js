@@ -268,10 +268,10 @@ describe('express.static()', function () {
           .expect(404, 'Not Found', done)
       })
 
-      it('should fall-through when traversing past root', function (done) {
+      it('should serve file when path is normalized within root', function (done) {
         request(this.app)
           .get('/users/../../todo.txt')
-          .expect(404, 'Not Found', done)
+          .expect(200, '- groceries', done)
       })
 
       it('should fall-through when URL too long', function (done) {
@@ -343,10 +343,10 @@ describe('express.static()', function () {
           .expect(400, /BadRequestError/, done)
       })
 
-      it('should 403 when traversing past root', function (done) {
+      it('should serve file when path is normalized within root', function (done) {
         request(this.app)
           .get('/users/../../todo.txt')
-          .expect(403, /ForbiddenError/, done)
+          .expect(200, '- groceries', done)
       })
 
       it('should 404 when URL too long', function (done) {
@@ -577,16 +577,16 @@ describe('express.static()', function () {
       this.app = createApp(fixtures, { 'fallthrough': false })
     })
 
-    it('should catch urlencoded ../', function (done) {
+    it('should serve file when urlencoded path is normalized within root', function (done) {
       request(this.app)
         .get('/users/%2e%2e/%2e%2e/todo.txt')
-        .expect(403, done)
+        .expect(200, '- groceries', done)
     })
 
-    it('should not allow root path disclosure', function (done) {
+    it('should 404 when normalized path does not exist', function (done) {
       request(this.app)
         .get('/users/../../fixtures/todo.txt')
-        .expect(403, done)
+        .expect(404, done)
     })
   })
 

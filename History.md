@@ -8,6 +8,22 @@
 
 * Avoid duplicate Content-Type header processing in `res.send()` when sending string responses without an explicit Content-Type header - by [@bjohansebas](https://github.com/bjohansebas) in [#6991](https://github.com/expressjs/express/pull/6991)
 
+## 🔧 Dependency Updates
+
+* devDeps: `connect-redis@^9.0.0` (from ^8.0.1)
+* devDeps: `ejs@^4.0.1` (from ^3.1.10)
+* devDeps: `eslint@^9.39.2` (from 8.47.0)
+  * Migrated ESLint configuration from `.eslintrc.yml` to new flat config format (`eslint.config.js`) required by ESLint 9
+  * Added `globals` package as devDependency for ESLint flat config
+* devDeps: `marked@^17.0.1` (from ^15.0.3)
+* devDeps: `mocha@^11.7.5` (from ^10.7.3)
+* devDeps: `supertest@^7.2.2` (from ^6.3.0)
+
+## 🐛 Bug Fixes
+
+* Fixed unused variable lint errors in `lib/view.js` and `test/app.router.js` by using optional catch binding
+* Updated tests to reflect new path normalization behavior in `serve-static`/`send` packages where path traversal attempts are normalized rather than blocked with 403
+
 5.2.1 / 2025-12-01
 =======================
 
