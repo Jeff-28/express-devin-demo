@@ -16,7 +16,7 @@
   * Migrated ESLint configuration from `.eslintrc.yml` to new flat config format (`eslint.config.js`) required by ESLint 9
   * Added `globals` package as devDependency for ESLint flat config
 * devDeps: `marked@^17.0.1` (from ^15.0.3)
-* devDeps: `mocha@^11.7.5` (from ^10.7.3)
+* devDeps: `mocha@^11.3.0` (from ^10.7.3) - pinned to 11.3.0 to avoid diff@6+ DoS vulnerability (GHSA-73rr-hh4g-fpgx)
 * devDeps: `supertest@^7.2.2` (from ^6.3.0)
 
 ## 🐛 Bug Fixes
