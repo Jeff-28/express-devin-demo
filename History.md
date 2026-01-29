@@ -12,7 +12,7 @@
 
 * deps: `eslint@^9.39.2` (migrated to flat config format)
 * deps: `mocha@11.3.0`
-* deps: `marked@^17.0.1`
+* deps: `marked@^15.0.12` (kept at 15.x for CommonJS compatibility)
 * deps: `ejs@^4.0.1`
 * deps: `connect-redis@^9.0.0`
 * deps: `globals@^16.2.0` (new dependency for ESLint flat config)
