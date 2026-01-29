@@ -7,6 +7,7 @@ const { Buffer } = require('node:buffer');
 
 var request = require('supertest')
 var utils = require('./support/utils')
+var rawRequest = utils.rawRequest
 
 var fixtures = path.join(__dirname, '/fixtures')
 var relative = path.relative(process.cwd(), fixtures)
@@ -269,9 +270,11 @@ describe('express.static()', function () {
       })
 
       it('should fall-through when traversing past root', function (done) {
-        request(this.app)
-          .get('/users/../../todo.txt')
-          .expect(404, 'Not Found', done)
+        rawRequest(this.app, 'GET', '/users/../../todo.txt', function (err, res) {
+          if (err) return done(err)
+          assert.strictEqual(res.statusCode, 404)
+          done()
+        })
       })
 
       it('should fall-through when URL too long', function (done) {
@@ -344,9 +347,12 @@ describe('express.static()', function () {
       })
 
       it('should 403 when traversing past root', function (done) {
-        request(this.app)
-          .get('/users/../../todo.txt')
-          .expect(403, /ForbiddenError/, done)
+        rawRequest(this.app, 'GET', '/users/../../todo.txt', function (err, res) {
+          if (err) return done(err)
+          assert.strictEqual(res.statusCode, 403)
+          assert.ok(/ForbiddenError/.test(res.body))
+          done()
+        })
       })
 
       it('should 404 when URL too long', function (done) {
@@ -578,15 +584,19 @@ describe('express.static()', function () {
     })
 
     it('should catch urlencoded ../', function (done) {
-      request(this.app)
-        .get('/users/%2e%2e/%2e%2e/todo.txt')
-        .expect(403, done)
+      rawRequest(this.app, 'GET', '/users/%2e%2e/%2e%2e/todo.txt', function (err, res) {
+        if (err) return done(err)
+        assert.strictEqual(res.statusCode, 403)
+        done()
+      })
     })
 
     it('should not allow root path disclosure', function (done) {
-      request(this.app)
-        .get('/users/../../fixtures/todo.txt')
-        .expect(403, done)
+      rawRequest(this.app, 'GET', '/users/../../fixtures/todo.txt', function (err, res) {
+        if (err) return done(err)
+        assert.strictEqual(res.statusCode, 403)
+        done()
+      })
     })
   })
 

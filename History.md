@@ -8,6 +8,20 @@
 
 * Avoid duplicate Content-Type header processing in `res.send()` when sending string responses without an explicit Content-Type header - by [@bjohansebas](https://github.com/bjohansebas) in [#6991](https://github.com/expressjs/express/pull/6991)
 
+## 🔧 DevDependencies
+
+* deps: `eslint@^9.39.2` (migrated to flat config format)
+* deps: `mocha@11.3.0`
+* deps: `marked@^17.0.1`
+* deps: `ejs@^4.0.1`
+* deps: `connect-redis@^9.0.0`
+* deps: `supertest@^7.2.2`
+* deps: `globals@^16.2.0` (new dependency for ESLint flat config)
+
+## 🧪 Tests
+
+* Updated path traversal tests to use raw HTTP requests (supertest 7.x normalizes URLs)
+
 5.2.1 / 2025-12-01
 =======================
 

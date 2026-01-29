@@ -7,8 +7,10 @@
 var escapeHtml = require('escape-html');
 var express = require('../..');
 var fs = require('node:fs');
-var marked = require('marked');
 var path = require('node:path');
+
+// marked 17.x is ESM-only, so we need to use dynamic import
+var markedPromise = import('marked');
 
 var app = module.exports = express();
 
@@ -17,10 +19,12 @@ var app = module.exports = express();
 app.engine('md', function(path, options, fn){
   fs.readFile(path, 'utf8', function(err, str){
     if (err) return fn(err);
-    var html = marked.parse(str).replace(/\{([^}]+)\}/g, function(_, name){
-      return escapeHtml(options[name] || '');
-    });
-    fn(null, html);
+    markedPromise.then(function(marked) {
+      var html = marked.parse(str).replace(/\{([^}]+)\}/g, function(_, name){
+        return escapeHtml(options[name] || '');
+      });
+      fn(null, html);
+    }).catch(fn);
   });
 });
 
